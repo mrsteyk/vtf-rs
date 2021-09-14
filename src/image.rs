@@ -47,8 +47,9 @@ impl<'a> VTFImage<'a> {
     }
 
     fn decode_dxt(&self, bytes: &[u8], variant: DXTVariant) -> Result<Vec<u8>, Error> {
-        let mut output: Vec<u8> = Vec::new();
-        DxtDecoder::new(bytes, self.width as u32, self.height as u32, variant)?.read_image(&mut output)?;
+        let decoder = DxtDecoder::new(bytes, self.width as u32, self.height as u32, variant)?;
+        let mut output: Vec<u8> = vec![0; decoder.total_bytes() as usize];
+        decoder.read_image(&mut output)?;
         Ok(output.to_vec())
     }
 
